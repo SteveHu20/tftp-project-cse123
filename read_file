@@ -1,0 +1,24 @@
+Since TFTP does not support authentication, anyone can send requests 
+to your server to read or write files, by using your group specific port 
+on purpose or accidentally. To avoid having your private files stolen or 
+overwritten, have the server operate in a directory where it has read 
+and write privileges, and only store test files there. You must then 
+explicitly check that read and write requests use simple filenames and 
+not full pathnames, so that no files outside this directory can be 
+accessed.
+
+Since the protocol allows bi-directional transfer (read and write), 
+both the server and the client can be either senders or receivers of 
+data for any given session. The protocol also specifies that all messages 
+are acknowledged, so programs must both send and receive messages during 
+the same session. This symmetry means that most of the code can be shared 
+between the client and the sender.
+
+During normal protocol operation, your programs send and receive messages 
+according to protocol rules. The core logic of the program consists of a 
+main receive/send loop plus some initialization and termination code. In 
+the loop, you wait for a message from the peer. If it is the next expected 
+message, you send your next message or terminate the session successfully. 
+You need to know the message number (block #) that you are next expecting 
+to see, so that you can distinguish between new and duplicate messages, 
+whether DATA or ACK.
